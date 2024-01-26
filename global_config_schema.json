@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [ "activate"],
+  "properties": {
+    "tail": {
+      "title":"小尾巴，",
+      "description":"在消息后面附加的小尾巴。",
+      "type": "string"
+    },
+    "activate": {
+      "title":"启动！",
+      "description":"开始向所有消息附加小尾巴。",
+      "type": "boolean"
+    }
+  }
+}
