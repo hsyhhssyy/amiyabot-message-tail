@@ -24,25 +24,16 @@ bot = MessageTailPluginInstance(
     global_config_schema=f'{curr_dir}/global_config_schema.json',
 )
 
-old_message_func = {}
+@bot.message_before_send
+async def _(chain: Chain, factory_name: str, instance):
 
-async def custom_send_chain_message(self, chain:Chain, use_http=False, *args, **kwargs):
-    func = old_message_func.get(self)
-    log.info(f'Created a new message with UUID: {chain.data.channel_id} {chain.data.user_id}')
     if bot:
         if bot.get_config('activate') == True:
             if bot.get_config('tail'):
                 tail_text = bot.get_config('tail')
-                # 如果chain.chain存在且最后一个类型是Text，则小尾巴要以换行开头
+                # 如果chain.chain属性存在且最后一个类型是Text，则小尾巴要以换行开头
                 if chain.chain and isinstance(chain.chain[-1], Text):
                     chain.text("\n")
                 chain.text(tail_text)
-    return await func(chain, use_http)
 
-
-@bot.message_before_handle
-async def _(data: Message, factory_name: str, instance):
-    if instance not in old_message_func:
-        old_message_func[instance] = instance.send_chain_message
-        instance.send_chain_message = types.MethodType(
-            custom_send_chain_message, instance)
+    return chain
